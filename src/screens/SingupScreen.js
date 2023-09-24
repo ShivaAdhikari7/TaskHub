@@ -103,6 +103,7 @@ const SingupScreen = ({ navigation }) => {
           style={{ marginTop: 18, marginBottom: 4 }}
           onPress={() => handleSignup()}
         />
+        <Text style={{ fontSize: 16, color: COLORS.grey }}>{message}</Text>
       </View>
       <View
         style={{

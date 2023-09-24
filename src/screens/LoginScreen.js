@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Pressable,
   Image,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,10 +14,35 @@ import { Ionicons } from "@expo/vector-icons";
 import Button from "../components/Button";
 
 import COLORS from "../utils/colors";
-
+import { useNavigation } from "@react-navigation/native";
+import database from "@react-native-firebase/database";
+import auth from "@react-native-firebase/auth";
 const LoginScreen = ({ navigation }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const navigation = useNavigation();
 
+  const handleLogin = async () => {
+    try {
+      const isUserLogin = await auth().signInWithEmailAndPassword(
+        email,
+        password
+      );
+      setMessage("");
+      console.log(isUserLogin);
+
+      navigation.navigate("Home", {
+        email: isUserLogin.user.email,
+        uid: isUserLogin.user.uid,
+      });
+    } catch (err) {
+      console.log(err);
+
+      setMessage(err.message);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1, marginHorizontal: 22 }}>
@@ -35,6 +61,8 @@ const LoginScreen = ({ navigation }) => {
               placeholderTextColor={COLORS.black}
               keyboardType="email-address"
               style={{ width: "100%" }}
+              value={email}
+              onChangeText={(value) => setEmail(value)}
             />
           </View>
         </View>
@@ -46,6 +74,8 @@ const LoginScreen = ({ navigation }) => {
               placeholderTextColor={COLORS.black}
               secureTextEntry={isPasswordShown}
               style={{ width: "100%" }}
+              value={password}
+              onChangeText={(value) => setPassword(value)}
             />
             <TouchableOpacity
               style={{ position: "absolute", right: 12 }}
@@ -62,14 +92,12 @@ const LoginScreen = ({ navigation }) => {
         </View>
 
         <Button
-          onPress={() => {
-            navigation.navigate("Home");
-          }}
+          onPress={() => handleLogin()}
           title="Login"
           filled
           style={{ marginTop: 18, marginBottom: 4 }}
         />
-
+        <Text style={{ fontSize: 18, color: COLORS.grey }}>{message}</Text>
         <View
           style={{
             flexDirection: "row",
