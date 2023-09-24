@@ -4,18 +4,19 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  Button,
   Pressable,
+  Image,
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import CheckBox from "expo-checkbox";
+import Button from "../components/Button";
+
 import COLORS from "../utils/colors";
 
 const SingupScreen = ({ navigation }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flex: 1, marginHorizontal: 22 }}>
@@ -80,51 +81,60 @@ const SingupScreen = ({ navigation }) => {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          marginVertical: 10,
+          marginVertical: 20,
         }}
       >
-        <View style={styles.text}>
-          <Text style={{ fontSize: 14 }}> Or sign Up with</Text>
-
-          <View style={styles.text}></View>
-        </View>
-        <View style={styles.logo}>
+        <Text
+          style={{
+            fontSize: 24,
+            textDecorationLine: "underline",
+            textDecorationColor: COLORS.primary,
+            flex: 1,
+            textAlign: "center",
+          }}
+        >
+          Or Signup with
+        </Text>
+      </View>
+      <View style={{ flexDirection: "row", justifyContent: "center" }}>
+        <TouchableOpacity onPress={() => {}} style={styles.logo}>
           <Image
-            source={require("../../assets/todo.png")}
+            source={require("../../assets/facebook.png")}
             style={{ height: 36, width: 36, marginRight: 8 }}
             resizeMode="contain"
           />
           <Text>Facebook</Text>
-        </View>
-        <View style={styles.logo}>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => {}} style={styles.logo}>
           <Image
-            source={require("../../assets/todo.png")}
+            source={require("../../assets/google.png")}
             style={{ height: 36, width: 36, marginRight: 8 }}
             resizeMode="contain"
           />
           <Text>Google</Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            marginVertical: 22,
-          }}
-        >
-          <Text style={styles.footerText}>Already have an account</Text>
-          <Pressable onPress={() => navigtion.navigate("Login")}>
-            <Text
-              style={{
-                fontSize: 16,
-                color: COLORS.primary,
-                fontWeight: "bold",
-                marginLeft: 6,
-              }}
-            >
-              Login
-            </Text>
-          </Pressable>
-        </View>
+        </TouchableOpacity>
+      </View>
+
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          marginVertical: 22,
+        }}
+      >
+        <Text style={styles.footerText}>Already have an Account</Text>
+        <Pressable onPress={() => navigation.navigate("Login")}>
+          <Text
+            style={{
+              fontSize: 16,
+              color: COLORS.primary,
+              fontWeight: "bold",
+              marginLeft: 6,
+            }}
+          >
+            Login
+          </Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -160,12 +170,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingLeft: 22,
   },
-  text: {
-    flex: 1,
-    height: 1,
-    backgroundColor: COLORS.grey,
-    marginHorizontal: 10,
-  },
+
   logo: {
     flex: 1,
     alignItems: "center",
@@ -174,10 +179,12 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.grey,
     marginRight: 4,
+    marginBottom: 10,
     borderRadius: 10,
   },
   footerText: {
     fontSize: 16,
+    marginBottom: 30,
     color: COLORS.black,
   },
 });
