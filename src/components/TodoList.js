@@ -1,14 +1,28 @@
-import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, { useState } from "react";
+import { StyleSheet, Text, View, Modal, TouchableOpacity } from "react-native";
 import COLORS from "../utils/colors";
 import Button from "./Button";
+import TodoModal from "./TodoModal";
 
 export default TodoList = ({ list }) => {
+  const [isListVisible, setIsListVisible] = useState(false);
+
   const completed = list.filter((todo) => todo.completed).length;
   const remaining = list.length - completed;
+
+  const toggleListHandler = () => {
+    setIsListVisible(!isListVisible);
+  };
   return (
     <View>
-      <View style={styles.container}>
+      <Modal
+        onAnimationType="slide"
+        visible={isListVisible}
+        onClose={toggleListHandler}
+      >
+        <TodoModal list={list} closeModal={toggleListHandler} />
+      </Modal>
+      <TouchableOpacity style={styles.container} onPress={toggleListHandler}>
         <Text style={styles.listTitle}>Today's TODO:</Text>
 
         <View>
@@ -21,11 +35,12 @@ export default TodoList = ({ list }) => {
             <Text style={styles.countTitle}>Completed</Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
       <Button
         filled
         title="Add task"
         style={{ fontWeight: "500", marginTop: 40, width: "100%" }}
+        onPress={toggleListHandler}
       />
     </View>
   );

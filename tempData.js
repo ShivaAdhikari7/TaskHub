@@ -17,7 +17,7 @@ export default tempData = [
     completed: false,
   },
   {
-    title: "Do Homework",
+    title: "Do Work",
     completed: false,
   },
 ];
