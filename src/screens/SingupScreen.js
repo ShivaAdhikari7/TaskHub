@@ -11,11 +11,35 @@ import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../components/Button";
+import database from "@react-native-firebase/database";
+import { useNavigation } from "@react-navigation/native";
+import auth from "@react-native-firebase/auth";
 
 import COLORS from "../utils/colors";
 
 const SingupScreen = ({ navigation }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const navigation = useNavigation();
+
+  const handleSignup = async () => {
+    try {
+      const isUserCreated = await auth().createUserWithEmailAndPassword(
+        email,
+        password
+      );
+
+      console.log(isUserCreated);
+
+      navigation.navigate("Login");
+    } catch (err) {
+      console.log(err);
+
+      setMessage(err.message);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -45,6 +69,7 @@ const SingupScreen = ({ navigation }) => {
               placeholderTextColor={COLORS.black}
               keyboardType="email-address"
               style={{ width: "100%" }}
+              onChangeText={(value) => setEmail(value)}
             />
           </View>
         </View>
@@ -56,6 +81,7 @@ const SingupScreen = ({ navigation }) => {
               placeholderTextColor={COLORS.black}
               secureTextEntry={isPasswordShown}
               style={{ width: "100%" }}
+              onChangeText={(value) => setPassword(value)}
             />
             <TouchableOpacity
               style={{ position: "absolute", right: 12 }}
@@ -75,6 +101,7 @@ const SingupScreen = ({ navigation }) => {
           title="Sign Up"
           filled
           style={{ marginTop: 18, marginBottom: 4 }}
+          onPress={() => handleSignup()}
         />
       </View>
       <View

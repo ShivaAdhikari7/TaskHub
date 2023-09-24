@@ -11,11 +11,9 @@ import {
 import React, { useState } from "react";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import COLORS from "../utils/colors";
-import tempData from "../../tempData";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 const TodoModal = (props) => {
-  const [list, setList] = useState(tempData);
+  const [list, setList] = useState(props.list);
 
   const totalTask = list.length;
   const completedTask = list.filter((todo) => todo.completed).length;
@@ -46,42 +44,44 @@ const TodoModal = (props) => {
     );
   };
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        style={{ position: "absolute", top: 64, right: 32, zIndex: 10 }}
-        onPress={props.closeModal}
-      >
-        <AntDesign name="close" size={24} color={COLORS.black} />
-      </TouchableOpacity>
-      <View style={[styles.section, styles.header]}>
-        <View>
-          <Text style={styles.title}>Your Today's Task</Text>
-          <Text style={styles.taskCount}>
-            {completedTask} of {totalTask} tasks
-          </Text>
-        </View>
-      </View>
-      <View style={[styles.section, { flex: 3 }]}>
-        <FlatList
-          data={list}
-          renderItem={renderTodo}
-          keyExtractor={(item) => item.title}
-          contentContainerStyle={{ paddingHorizontal: 32, paddingVertical: 64 }}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-      <KeyboardAvoidingView
-        style={[styles.section, styles.footer]}
-        behavior="padding"
-      >
-        <TextInput style={[styles.input, { borderColor: COLORS.primary }]} />
+    <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+      <SafeAreaView style={styles.container}>
         <TouchableOpacity
-          style={[styles.addTodo, { backgroundColor: COLORS.primary }]}
+          style={{ position: "absolute", top: 64, right: 32, zIndex: 10 }}
+          onPress={props.closeModal}
         >
-          <AntDesign name="plus" size={16} color={COLORS.white} />
+          <AntDesign name="close" size={24} color={COLORS.black} />
         </TouchableOpacity>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        <View style={[styles.section, styles.header]}>
+          <View>
+            <Text style={styles.title}>Your Today's Task</Text>
+            <Text style={styles.taskCount}>
+              {completedTask} of {totalTask} tasks
+            </Text>
+          </View>
+        </View>
+        <View style={[styles.section, { flex: 3 }]}>
+          <FlatList
+            data={list}
+            renderItem={renderTodo}
+            keyExtractor={(item) => item.title}
+            contentContainerStyle={{
+              paddingHorizontal: 32,
+              paddingVertical: 64,
+            }}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+        <View style={[styles.section, styles.footer]}>
+          <TextInput style={[styles.input, { borderColor: COLORS.primary }]} />
+          <TouchableOpacity
+            style={[styles.addTodo, { backgroundColor: COLORS.primary }]}
+          >
+            <AntDesign name="plus" size={16} color={COLORS.white} />
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
