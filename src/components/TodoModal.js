@@ -13,8 +13,107 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 import COLORS from "../utils/colors";
 
 const TodoModal = (props) => {
-  const [list, setList] = useState(props.list);
+  const [inputTextValue, setInputTextValue] = useState(null);
+  const [list, setList] = useState(null);
+  const [isUpdateData, setIsUpdateData] = useState(false);
+  const [selectedCardIndex, setSelectedCardIndex] = useState(null);
 
+  useEffect(() => {
+    getDatabase();
+  }, []);
+  const getDatabase = async () => {
+    try {
+      // const data = await database().ref('todo').once('value');
+      const data = await database()
+        .ref("todo")
+        .on("value", (tempData) => {
+          console.log(data);
+          setList(tempData.val());
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleAddData = async () => {
+    try {
+      if (inputTextValue.length > 0) {
+        const index = list.length;
+        const response = await database().ref(`todo/${index}`).set({
+          value: inputTextValue,
+        });
+
+        console.log(response);
+
+        setInputTextValue("");
+      } else {
+        alert("Please Enter Value & Then Try Again");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleUpdateData = async () => {
+    try {
+      if (inputTextValue.length > 0) {
+        const response = await database()
+          .ref(`todo/${selectedCardIndex}`)
+          .update({
+            value: inputTextValue,
+          });
+
+        console.log(response);
+        setInputTextValue("");
+        setIsUpdateData(false);
+      } else {
+        alert("Please Enter Value & Then Try Again");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleCardPress = (cardIndex, cardValue) => {
+    try {
+      setIsUpdateData(true);
+      setSelectedCardIndex(cardIndex);
+      setInputTextValue(cardValue);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleCardLongPress = (cardIndex, cardValue) => {
+    try {
+      Alert.alert("Alert", `Are You Sure To Delete ${cardValue} ?`, [
+        {
+          text: "Cancel",
+          onPress: () => {
+            console.log("Cancel Is Press");
+          },
+        },
+        {
+          text: "Ok",
+          onPress: async () => {
+            try {
+              const response = await database()
+                .ref(`todo/${cardIndex}`)
+                .remove();
+
+              setInputTextValue("");
+              setIsUpdateData(false);
+              console.log(response);
+            } catch (err) {
+              console.log(err);
+            }
+          },
+        },
+      ]);
+    } catch (err) {
+      console.log(err);
+    }
+  };
   const totalTask = list.length;
   const completedTask = list.filter((todo) => todo.completed).length;
 
@@ -29,6 +128,21 @@ const TodoModal = (props) => {
             style={{ width: 32 }}
           />
         </TouchableOpacity>
+        {!isUpdateData ? (
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => handleAddData()}
+          >
+            <Text style={{ color: "#fff" }}>Add</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => handleUpdateData()}
+          >
+            <Text style={{ color: "#fff" }}>Update</Text>
+          </TouchableOpacity>
+        )}
         <Text
           style={[
             styles.todo,
@@ -63,13 +177,22 @@ const TodoModal = (props) => {
         <View style={[styles.section, { flex: 3 }]}>
           <FlatList
             data={list}
-            renderItem={renderTodo}
-            keyExtractor={(item) => item.title}
-            contentContainerStyle={{
-              paddingHorizontal: 32,
-              paddingVertical: 64,
+            renderItem={(item) => {
+              const cardIndex = item.index;
+              if (item.item !== null) {
+                return (
+                  <TouchableOpacity
+                    style={styles.card}
+                    onPress={() => handleCardPress(cardIndex, item.item.value)}
+                    onLongPress={() =>
+                      handleCardLongPress(cardIndex, item.item.value)
+                    }
+                  >
+                    <Text>{item.item.value}</Text>
+                  </TouchableOpacity>
+                );
+              }
             }}
-            showsVerticalScrollIndicator={false}
           />
         </View>
         <View style={[styles.section, styles.footer]}>

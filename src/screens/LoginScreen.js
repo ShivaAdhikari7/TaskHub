@@ -17,7 +17,7 @@ import COLORS from "../utils/colors";
 import { useNavigation } from "@react-navigation/native";
 import database from "@react-native-firebase/database";
 import auth from "@react-native-firebase/auth";
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

@@ -17,7 +17,7 @@ import auth from "@react-native-firebase/auth";
 
 import COLORS from "../utils/colors";
 
-const SingupScreen = ({ navigation }) => {
+const SingupScreen = () => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
